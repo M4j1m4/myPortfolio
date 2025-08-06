@@ -4,14 +4,27 @@ import { Github, Linkedin, Mail, ExternalLink, ChevronDown, Code, Database, Glob
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrollled] = useState(false);
+  const [showEmailDropdown, setShowEmailDropdown] = useState(false);
 
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrollled(window.scrollY > 50);
     };
+
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.email-dropdown')) {
+        setShowEmailDropdown(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return() => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+    };
   },[])
 
 
@@ -25,7 +38,7 @@ const App = () => {
     },
     {
       title: "INTERNSHIP - RoundTable",
-      description: "A fully functional booking management system tailored for seamless meetings in Cultural Center of the Philippines",
+      description: "A fully functional booking management system tailored for seamless meetings in Cultural Center of the Philippines. The system used LAMP Stack for local server deployment.",
       technologies: ["PHP", "Laravel", "Tailwind CSS", "Blade"],
       github: "https://github.com/M4j1m4/round_table"
     },
@@ -97,7 +110,7 @@ const App = () => {
             Khen <span className="font-bold">Abesamis</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 font-light">
-            Full-Stack Developer crafting digital experiences with clean code and modern technologies
+            A Full-Stack Developer crafting digital experiences with clean code and modern technologies
           </p>
           <div className="flex justify-center space-x-6 mb-12">
             <a href="https://github.com/M4j1m4" className="text-gray-600 hover:text-blue-600 transition-colors">
@@ -106,9 +119,31 @@ const App = () => {
             <a href="https://www.linkedin.com/in/khen-abesamis-b08522366/" className="text-gray-600 hover:text-blue-600 transition-colors">
               <Linkedin className="w-6 h-6" />
             </a>
-            <a href="abesamiskheni@gmail.com" className="text-gray-600 hover:text-blue-600 transition-colors">
-              <Mail className="w-6 h-6" />
-            </a>
+            <div className="relative email-dropdown">
+              <button
+                onClick={() => setShowEmailDropdown(!showEmailDropdown)}
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                <Mail className="w-6 h-6" />
+              </button>
+              {showEmailDropdown && (
+                <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-max z-10">
+                  <div className="flex items-center space-x-2">
+                    <Mail className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-700">abesamiskheni@gmail.com</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText('abesamiskheni@gmail.com');
+                      setShowEmailDropdown(false);
+                    }}
+                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    Click to copy
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <button
             onClick={() => scrollToSection('about')}
@@ -189,13 +224,15 @@ const App = () => {
                     <Github className="w-4 h-4 mr-1" />
                     Code
                   </a>
-                  <a
-                    href={project.demo}
-                    className="flex items-center text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    Demo
-                  </a>
+                  {project.demo && (
+                    <a
+                      href={project.demo}
+                      className="flex items-center text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      Demo
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -213,13 +250,8 @@ const App = () => {
           </p>
           <div className="flex justify-center space-x-8">
             <a
-              href="mailto:john@example.com"
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              Send Email
-            </a>
-            <a
-              href="#"
+              href="/cv/Khen_Abesamis_Resume.pdf"
+              download="Khen_Abesamis_Resume.pdf"
               className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:border-gray-400 transition-colors font-medium"
             >
               Download CV
@@ -230,7 +262,7 @@ const App = () => {
 
       {/* Footer */}
       <footer className="py-8 px-6 text-center text-gray-500">
-        <p>&copy; 2024 John Developer. Built with React & Tailwind CSS.</p>
+        <p>&copy; 2025 Khen Abesamis. Built with React & Tailwind CSS.</p>
       </footer>
     </div>
   )
